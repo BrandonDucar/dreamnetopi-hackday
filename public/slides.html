@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dreamnetiopi — High-Res Interactive Screen Pitch Deck</title>
+  <style>
+    :root {
+      --bg: #07090e;
+      --card-bg: rgba(13, 17, 23, 0.85);
+      --border: rgba(0, 240, 255, 0.25);
+      --cyan: #00f0ff;
+      --pink: #ff0077;
+      --green: #7ee787;
+      --yellow: #f1e05a;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(10, 14, 20, 0.95);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo { font-size: 26px; }
+    .brand-title {
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--cyan), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-left: 1px solid rgba(255,255,255,0.15);
+      padding-left: 12px;
+      display: none;
+    }
+    @media(min-width: 900px) { .brand-sub { display: inline-block; } }
+
+    /* Pitch Timer */
+    .timer-pill {
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(126, 231, 135, 0.4);
+      color: var(--green);
+      padding: 5px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .timer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+    .timer-warning {
+      color: var(--yellow) !important;
+      border-color: var(--yellow) !important;
+    }
+    .timer-warning .timer-dot {
+      background: var(--yellow) !important;
+      box-shadow: 0 0 8px var(--yellow) !important;
+    }
+
+    /* Controls Bar */
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #0077ff);
+      color: #05070a;
+      border: none;
+      font-weight: 700;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+    }
+    .btn-active {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+    .screen-counter {
+      font-family: ui-monospace, monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 5px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    /* Main Deck Stage */
+    .deck-stage {
+      position: absolute;
+      top: 60px;
+      bottom: 76px; /* space for bottom thumbnail bar */
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Slide Container */
+    .slide-wrapper {
+      display: none;
+      width: 100%;
+      max-width: 1540px;
+      height: 100%;
+      min-height: 640px;
+      animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide-wrapper.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(0.985); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Slide Header Info */
+    .slide-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .badge-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rubric-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: rgba(255, 0, 119, 0.15);
+      color: var(--pink);
+      border: 1px solid rgba(255, 0, 119, 0.4);
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+    .sponsor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+    .slide-header-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    /* Slide Body Layouts */
+    /* View Mode: Theater (Focus on Image) */
+    .view-theater .slide-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      flex: 1;
+    }
+    .view-theater .image-showcase {
+      flex: 1;
+      min-height: 0;
+      background: #000;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.1);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-in;
+    }
+    .view-theater .image-showcase img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* View Mode: Split (Image Left, Details Right) */
+    .view-split .slide-body {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 20px;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+    }
+    .view-split .image-showcase {
+      height: 100%;
+      background: #000;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      cursor: zoom-in;
+    }
+    .view-split .image-showcase img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .view-split .details-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    /* Window Chrome Bar on Image */
+    .window-chrome {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 28px;
+      background: rgba(13, 17, 23, 0.85);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+      z-index: 5;
+    }
+    .traffic-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .window-title {
+      font-size: 11px;
+      font-family: ui-monospace, monospace;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    /* Cards & Details Elements */
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .info-card-highlight {
+      border-color: rgba(0, 240, 255, 0.4);
+      background: rgba(0, 240, 255, 0.05);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-body {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .card-body strong { color: #fff; }
+
+    /* Code & Telemetry Box */
+    .code-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      background: #040608;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #58a6ff;
+      line-height: 1.45;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Spoken Teleprompter / Speaker Notes Bar */
+    .teleprompter-bar {
+      background: rgba(6, 12, 18, 0.95);
+      border: 1px solid rgba(126, 231, 135, 0.35);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    }
+    .teleprompter-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .teleprompter-content {
+      flex: 1;
+    }
+    .teleprompter-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .teleprompter-text {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e6edf3;
+      font-weight: 500;
+    }
+
+    /* Bottom Thumbnail Filmstrip */
+    .bottom-filmstrip {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 76px;
+      background: rgba(10, 14, 20, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      overflow-x: auto;
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+    }
+    .thumb-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      height: 52px;
+    }
+    .thumb-item:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--cyan);
+    }
+    .thumb-item.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+    .thumb-preview-img {
+      width: 60px;
+      height: 38px;
+      border-radius: 4px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .thumb-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .thumb-num {
+      font-family: ui-monospace, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .thumb-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* Modal for Image Zoom */
+    .zoom-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      cursor: zoom-out;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .zoom-overlay.active { display: flex; }
+    .zoom-overlay img {
+      max-width: 98vw;
+      max-height: 96vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 50px rgba(0,240,255,0.3);
+    }
+  </style>
+</head>
+<body class="view-theater">
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="brand-group">
+      <span class="brand-logo">🐙</span>
+      <div>
+        <span class="brand-title">DREAMNETIOPI</span>
+        <span class="brand-sub">Judge Pitch Deck • The AI Conference 2026</span>
+      </div>
+    </div>
+
+    <!-- Presentation Timer -->
+    <div class="timer-pill" id="timer-pill" onclick="toggleTimer()" title="Click to pause/start timer">
+      <div class="timer-dot"></div>
+      <span id="timer-display">00:00 / 02:00</span>
+    </div>
+
+    <!-- Navigation & Mode Controls -->
+    <div class="controls-group">
+      <button class="btn" id="btn-prev" onclick="prevSlide()">◀ Back</button>
+      <span class="screen-counter" id="screen-counter">Screen 1 / 8</span>
+      <button class="btn btn-primary" id="btn-next" onclick="nextSlide()">Next ▶</button>
+      
+      <!-- View Mode Selector -->
+      <button class="btn" id="btn-view-mode" onclick="toggleViewMode()" title="Toggle Big Image Theater vs Split View (T)">
+        🖼️ <span id="view-mode-label">Split View</span>
+      </button>
+
+      <!-- Toggle Notes (N) -->
+      <button class="btn" id="btn-notes" onclick="toggleNotes()" title="Toggle Teleprompter (N)">
+        🗣️ Notes
+      </button>
+
+      <!-- Open Live App -->
+      <a href="/" target="_blank" class="btn" style="text-decoration:none;" title="Open live interactive app">
+        ⚡ Live App ↗
+      </a>
+
+      <!-- Fullscreen (F) -->
+      <button class="btn" onclick="toggleFullscreen()" title="Fullscreen (F / F11)">
+        ⛶
+      </button>
+    </div>
+  </header>
+
+  <!-- Slide Stage -->
+  <main class="deck-stage" onclick="handleStageClick(event)">
+
+    <!-- ========================================== -->
+    <!-- SCREEN 1: THE PROBLEM & OPERATIONS HUD -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper active" id="slide-1" data-title="Operations HUD">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">1. The Problem</span>
+          <span class="sponsor-badge">Coastal Freeze Co. • Jupiter GreenMarket • Artisan Maker</span>
+        </div>
+        <h2 class="slide-header-title">When Plans Change, Small Food Makers Face Complete Chaos</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/01_today_dashboard.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — Super Clawoctopus HUD (Batch 26 Strawberry Crisis)</span>
+          </div>
+          <img src="/media/01_today_dashboard.png" alt="Dreamnetiopi Operations HUD">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🍓 Ground Truth: Coastal Freeze Co. Florida</div>
+            <div class="card-body">
+              Real artisan freeze-dried snack business in Florida. We balance 5 SKUs, Harvest Right freeze dryers, online customer preorders, and weekly farmers markets.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">⚠️ The Physical Maker Constraint</div>
+            <div class="card-body">
+              <strong>Hands are inside sanitized gloves handling trays at -40°F.</strong> Food makers cannot type on keyboards or juggle spreadsheets while operating machinery.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">💥 The Crisis: Batch 26 Yields Light</div>
+            <div class="card-body">
+              When strawberries come out short, the day collapses into 45 minutes of frantic recalculations, broken customer preorders, and booth stockouts.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Hey judges, I'm Brandon. I run Coastal Freeze Co., an artisan freeze-dried snack company in Florida. Physical food makers operate in chaos. Our hands are in sanitized gloves handling freeze-dryer trays at -40°F. When strawberry yield comes in light, our entire day collapses into frantic texting and broken customer preorders. We built Dreamnetiopi so physical makers have an autonomous operations crew that coordinates itself."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 2: PLAUD NOTE PIN S WEARABLE VOICE -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-2" data-title="Plaud Voice">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">2. Tech Stack</span>
+          <span class="sponsor-badge">Plaud AI • NotePin S Wearable • Hands-Free SDK</span>
+        </div>
+        <h2 class="slide-header-title">Wearable Hands-Free Ingestion for Busy Kitchens</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/02_voice_brief_modal.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — Plaud NotePin S Live Audio Stream & Constraint Ingestion</span>
+          </div>
+          <img src="/media/02_voice_brief_modal.png" alt="Plaud AI Voice Modal">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🎙️ What Plaud Enabled</div>
+            <div class="card-body">
+              Wearable NotePin S captures physical batch QC and stock constraints directly inside the freezer room with <strong>99.4% acoustic accuracy</strong>.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">🚫 What Was Impossible Without It</div>
+            <div class="card-body">
+              Touching a contaminated phone or keyboard with food-grade gloves violates sanitary codes and slows packing lines down. Voice is the only viable physical interface.
+            </div>
+          </div>
+          <div class="code-box">
+Hardware: Plaud NotePin S (PLAUD-NP-88392)
+Founder Audio: "Tray inspection Batch 26 finished. Strawberries yielded light—only 12 bags ready. Mango yielded 65 bags. Protect 20 online preorders first, zero out strawberries for market, and push mango."
+Extracted: SKU-STRAWBERRY (12 avail, market: 0) | SKU-MANGO (65 avail, EXCESS)
+Target: Direct route to Band room 'pier48-rush'
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Food makers can't type on keyboards with sticky or frozen gloves. I wear a Plaud NotePin S. Right from the freezer room, I speak: 'Tray inspection Batch 26 finished. Strawberries yielded light—only 12 bags ready. Mango yielded 65. Protect 20 online preorders, zero out strawberry for market, and push mango.' Plaud transcribes with 99.4% acoustic accuracy and routes the constraints instantly."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 3: DUAL-ALLOCATION INVENTORY TABLE -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-3" data-title="Inventory Architecture">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">3. Live Demo</span>
+          <span class="sponsor-badge">Dual-Allocation Inventory • Harvest Right Trays</span>
+        </div>
+        <h2 class="slide-header-title">Dual-Allocation Architecture: Online Preorders vs Booth Stock</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/03_plan_inventory_table.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — Inventory Dual Allocation (Online Reserved vs Market Stock)</span>
+          </div>
+          <img src="/media/03_plan_inventory_table.png" alt="Plan Inventory Table">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">📦 Dual Allocation Engine</div>
+            <div class="card-body">
+              Every SKU is divided into <strong>Online Preorders</strong> (hard customer commitments that cannot be broken) and <strong>Market Allocated</strong> (booth foot traffic).
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">🔍 Real Batch Telemetry</div>
+            <div class="card-body">
+              Maps directly to Harvest Right freeze dryers: Batch HR-24 (Strawberries), HR-25 (Peaches), HR-28 (Mango), HR-31 (Galaxy Gelatin Cubes).
+            </div>
+          </div>
+          <div class="code-box">
+SKU-STRAWBERRY: Total 12 | Online Reserved: 12 (DEFICIT -8) | Market: 0 (ZEROED)
+SKU-MANGO:      Total 80 | Online Reserved: 25 | Market: 55 (EXCESS READY)
+SKU-GELATIN:    Total 70 | Online Reserved: 20 | Market: 50 (HERO PAIRING)
+Action: Deterministic swap required to protect margin and preorder trust.
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (10 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Here is our dual-allocation inventory table. Notice our 5 SKUs mapped against Harvest Right batches. The system tracks 80 bags of mango, 70 gelatin cubes, and immediately registers the strawberry shortage—flagging that online customer preorders must be protected from booth walk-ups."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 4: BAND PROTOCOL COORDINATION ROOM -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-4" data-title="Band Room">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">2. Tech Stack</span>
+          <span class="sponsor-badge">Band Protocol • Room: pier48-rush • 2-of-2 Agent Quorum</span>
+        </div>
+        <h2 class="slide-header-title">Multi-Peer Agent Coordination & Quorum Governance</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/05_sponsor_tool_matrix.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — Sponsor Tool Matrix & Band Room Coordination State</span>
+          </div>
+          <img src="/media/05_sponsor_tool_matrix.png" alt="Band Room & Sponsor Tools">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🛡️ What Band Enabled</div>
+            <div class="card-body">
+              Multi-peer coordination room (<code>pier48-rush</code>) connecting <code>@founder</code>, <code>@offer-desk</code>, <code>@campaign-desk</code>, and <code>@neo4j-tracer</code> with a verifiable, replayable log.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">🚫 What Was Impossible Without It</div>
+            <div class="card-body">
+              Without Band, multi-agent swarms run wild, hallucinate autonomous actions, spam social media, or spend money without consensus and approval.
+            </div>
+          </div>
+          <div class="code-box">
+[Band Room: pier48-rush]
+@founder: "@offer-desk Out of strawberries for Pier 48 rush. Push mango and blue raspberry. Rewrite offer. Do not publish. @mention @campaign-desk then the owner for approval."
+@neo4j-tracer: "Neo4j Causal Graph: 20 preorders PROTECTED. Market strawberry allocation ZEROED. Mango cleared for bundle."
+@offer-desk: "OpenRouter Claude 3.5 Sonnet: Hero Offer rewritten to 'Pier 48 Swicy Cosmic Duo' ($19.99). Margin: 76.2%. Status: Staged."
+@campaign-desk: "OpenRouter Llama 3.1 70B: 5 channels staged in Postiz. Gate required: /approve."
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Next, Band coordinates the response in room pier48-rush. Plaud's transcript hits Band. The founder issues the directive: '@offer-desk out of strawberries, push mango, rewrite offer, do not publish, @mention campaign-desk then the owner for approval.' Watch Band enforce 2-of-2 agent quorum with a cryptographically verifiable replay log."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 5: NEO4J CAUSAL GRAPH (VS VECTOR RAG) -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-5" data-title="Neo4j Graph">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">3. Live Demo + Code</span>
+          <span class="sponsor-badge">Neo4j Graph Database • 18 Causal Nodes • 11.8ms</span>
+        </div>
+        <h2 class="slide-header-title">Why Neo4j Knowledge Graphs Beat Vector RAG for Supply Chains</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/06_chaos_rehearsal_diff.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — Neo4j Causal Graph Traversal & Disruption Diff</span>
+          </div>
+          <img src="/media/06_chaos_rehearsal_diff.png" alt="Neo4j Graph Diff">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🕸️ Deterministic Consequence Tracing</div>
+            <div class="card-body">
+              Neo4j traverses 18 connected nodes in <strong>11.8ms</strong>. Guarantees 100% of customer preorders are ringfenced while swapping booth offerings.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">🚫 Why Vector RAG Completely Fails</div>
+            <div class="card-body">
+              <strong>Vector search hallucinates on supply chains.</strong> If you ask an LLM or vector RAG to rebalance inventory, it invents phantom stock and breaks promises. Neo4j is mathematical ground truth.
+            </div>
+          </div>
+          <div class="code-box">
+// Executed Cypher Query
+MATCH (s:SKU {name:'strawberry', stock:0})-[:SUBSTITUTE]->(m:SKU {name:'mango'})
+MATCH (s)-[:ALLOCATED_TO]->(c:Commitment {type:'ONLINE_PREORDER'})
+SET c.status = 'PROTECTED_ASSIGNED'
+RETURN s, m, c
+
+Consequence:
+1. SKU-STRAWBERRY booth allocation -> 0
+2. 20 Online preorders -> 100% Locked & Protected
+3. Hero bundle -> Pivots to 'Swicy Cosmic Duo' ($19.99, 76.2% margin)
+4. Kitchen sealing task COM-02 -> Shifts tray from strawberry to mango
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "This is the critical differentiator: why Neo4j beats Vector RAG. Vector search hallucinates on supply chain cascades. Neo4j deterministically walks our 18-node causal graph: strawberry is out, 20 online preorders are locked and protected, booth strawberry stock drops to zero, and the hero offer pivots to mango. 11.8 milliseconds, zero hallucinations."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 6: OPENROUTER DUAL-MODEL COST ROUTING -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-6" data-title="OpenRouter Studio">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">2. Tech Stack</span>
+          <span class="sponsor-badge">OpenRouter • Claude 3.5 Sonnet + Llama 3.1 70B</span>
+        </div>
+        <h2 class="slide-header-title">Dual-Model Cost Routing: High Reasoning & Ultra-Low Cost</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/04_postiz_5platform_studio.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — 5-Platform Postiz Studio Generated via OpenRouter</span>
+          </div>
+          <img src="/media/04_postiz_5platform_studio.png" alt="Postiz 5-Platform Studio">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🧠 Claude 3.5 Sonnet (@offer-desk)</div>
+            <div class="card-body">
+              Calculates margin floors, bundle math, and price elasticity: created <strong>$19.99 Hero Bundle</strong> with <strong>76.2% gross margin</strong> (+80.6% revenue lift).
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">⚡ Llama 3.1 70B (@campaign-desk)</div>
+            <div class="card-body">
+              Fast, high-throughput copywriting tailored to character limits across Instagram, TikTok ASMR, Facebook, X, and Threads for <strong>$0.003/run</strong>.
+            </div>
+          </div>
+          <div class="code-box">
+Receipt 1: gen-or-pier48-offer-99214 (openrouter/anthropic/claude-3.5-sonnet)
+Prompt: "Recalculate bundle for Pier 48 rush with mango" -> Price: $19.99, Margin: 76.2%
+Receipt 2: gen-or-pier48-camp-99215 (openrouter/meta-llama/llama-3.1-70b-instruct)
+Output: 5 Native Channels Staged in Postiz | Total Cost: $0.00348
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "All LLM calls go through OpenRouter. We use Claude 3.5 Sonnet for the financial math: pricing our new Swicy Mango & Galaxy Gelatin bundle at $19.99 for a 76.2% gross margin. Then OpenRouter routes to Llama 3.1 70B to draft tailored copy across 5 platforms—Instagram, TikTok ASMR, Facebook, X, and Threads—for under a third of a cent total."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 7: DUPLOCLOUD HUMAN APPROVAL GATE -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-7" data-title="DuploCloud Approval">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">3. Live Demo + Code</span>
+          <span class="sponsor-badge">DuploCloud DevKit • Hosted /approve Gate</span>
+        </div>
+        <h2 class="slide-header-title">Guarded Execution: Agents Propose, the Maker Approves</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/07_postiz_swicy_mango_approved.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242/approve — DuploCloud Isolated Approval Form</span>
+          </div>
+          <img src="/media/07_postiz_swicy_mango_approved.png" alt="DuploCloud Approval">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🛡️ The DuploCloud Hosted Gate</div>
+            <div class="card-body">
+              DuploCloud automatically provisions the isolated approval form at <code>/approve</code>. Agents are strictly forbidden from publishing or spending without human consent.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">✅ 1-Click Maker Authorization</div>
+            <div class="card-body">
+              The founder sees the old vs new offer diff, reviews the 76.2% margin and 20 protected preorders, and signs with 1 tap.
+            </div>
+          </div>
+          <div class="code-box">
+Signature: sha256:d82e4f01ba837264a938cde1103728f9a4b2c1e7...
+Coordinated Actions Dispatched:
+1. Merge.dev locks Shopify + Square POS stock
+2. Postiz schedules 5-platform social broadcast
+3. Kitchen Packaging Task COM-02 updates trays
+4. Vultr edge verifies live checkout links (21ms)
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Safety is non-negotiable. DuploCloud hosts our human gate at slash approve. The agents cannot publish without my signature. I review the margin diff, tap 'Approve & Propagate', and Postiz updates all 5 platforms simultaneously: Instagram carousel, TikTok ASMR script, Facebook event, and Threads teaser."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 8: CRUSOE CLOUD CLEAN COMPUTE & PLAYBOOK -->
+    <!-- ========================================== -->
+    <section class="slide-wrapper" id="slide-8" data-title="Crusoe & Playbook">
+      <div class="slide-meta-bar">
+        <div class="badge-group">
+          <span class="rubric-badge">2. Tech Stack</span>
+          <span class="sponsor-badge">Crusoe Cloud ($5k Prize) • Stranded Methane Mitigation • 98.4% Clean</span>
+        </div>
+        <h2 class="slide-header-title">Energy-First AI Compute & Self-Tuning Playbook Evolution</h2>
+      </div>
+
+      <div class="slide-body">
+        <div class="image-showcase" onclick="openZoom('/media/08_history_playbook_evolution.png')">
+          <div class="window-chrome">
+            <span class="traffic-dot dot-red"></span>
+            <span class="traffic-dot dot-yellow"></span>
+            <span class="traffic-dot dot-green"></span>
+            <span class="window-title">http://localhost:4242 — History & Playbook Evolution Powered by Crusoe</span>
+          </div>
+          <img src="/media/08_history_playbook_evolution.png" alt="Crusoe & Playbook Evolution">
+        </div>
+
+        <div class="details-panel">
+          <div class="info-card info-card-highlight">
+            <div class="card-title">🌱 Crusoe Clean Compute Telemetry</div>
+            <div class="card-body">
+              Disruption simulations run on Crusoe Cloud stranded methane mitigation. <strong>98.4% Clean Energy Index</strong>, mitigating <strong>0.42 kg CO2e per run</strong>.
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="card-title">📚 Self-Tuning Playbook Evolution</div>
+            <div class="card-body">
+              Every resolved crisis auto-tunes our playbook: <em>"Rule #14: If humidity >75% in Florida, freeze dryer strawberry cycles extend by 4 hours. Buffer mango allocation by 25%."</em>
+            </div>
+          </div>
+          <div class="code-box">
+Live Telemetry: GET /api/crusoe/status
+{
+  "provider": "Crusoe Cloud",
+  "cleanEnergyIndex": "98.4%",
+  "carbonMitigatedKg": 0.42,
+  "simulationRuntimeMs": 4120,
+  "preordersSaved": 20,
+  "revenueProtected": "$840.00"
+}
+          </div>
+        </div>
+      </div>
+
+      <div class="teleprompter-bar">
+        <span class="teleprompter-icon">🗣️</span>
+        <div class="teleprompter-content">
+          <div class="teleprompter-label">YOUR SPOKEN NARRATION CUE (15 SECONDS):</div>
+          <div class="teleprompter-text">
+            "Finally, our rehearsal engine runs on Crusoe Cloud, mitigating 0.42 kilograms of CO2 using 98.4% clean stranded energy. The result? A 10-minute supply crisis resolved in 4 seconds. 20 customer preorders saved, $840 in revenue protected, and an auto-tuned playbook ready for next Saturday. That is Dreamnetiopi: Your business, coordinated. Thank you!"
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Thumbnail Filmstrip -->
+  <nav class="bottom-filmstrip">
+    <div class="thumb-item active" onclick="goToSlide(1)">
+      <img src="/media/01_today_dashboard.png" class="thumb-preview-img" alt="Screen 1">
+      <div class="thumb-text-group">
+        <span class="thumb-num">01 • PROBLEM</span>
+        <span class="thumb-title">Operations HUD</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(2)">
+      <img src="/media/02_voice_brief_modal.png" class="thumb-preview-img" alt="Screen 2">
+      <div class="thumb-text-group">
+        <span class="thumb-num">02 • PLAUD</span>
+        <span class="thumb-title">Wearable Voice</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(3)">
+      <img src="/media/03_plan_inventory_table.png" class="thumb-preview-img" alt="Screen 3">
+      <div class="thumb-text-group">
+        <span class="thumb-num">03 • INVENTORY</span>
+        <span class="thumb-title">Harvest Right Trays</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(4)">
+      <img src="/media/05_sponsor_tool_matrix.png" class="thumb-preview-img" alt="Screen 4">
+      <div class="thumb-text-group">
+        <span class="thumb-num">04 • BAND</span>
+        <span class="thumb-title">Coordination Room</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(5)">
+      <img src="/media/06_chaos_rehearsal_diff.png" class="thumb-preview-img" alt="Screen 5">
+      <div class="thumb-text-group">
+        <span class="thumb-num">05 • NEO4J</span>
+        <span class="thumb-title">Causal Graph vs RAG</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(6)">
+      <img src="/media/04_postiz_5platform_studio.png" class="thumb-preview-img" alt="Screen 6">
+      <div class="thumb-text-group">
+        <span class="thumb-num">06 • OPENROUTER</span>
+        <span class="thumb-title">Dual-Model Studio</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(7)">
+      <img src="/media/07_postiz_swicy_mango_approved.png" class="thumb-preview-img" alt="Screen 7">
+      <div class="thumb-text-group">
+        <span class="thumb-num">07 • DUPLOCLOUD</span>
+        <span class="thumb-title">Human Approval Gate</span>
+      </div>
+    </div>
+
+    <div class="thumb-item" onclick="goToSlide(8)">
+      <img src="/media/08_history_playbook_evolution.png" class="thumb-preview-img" alt="Screen 8">
+      <div class="thumb-text-group">
+        <span class="thumb-num">08 • CRUSOE</span>
+        <span class="thumb-title">Clean Compute & Tuning</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Image Zoom Lightbox Overlay -->
+  <div class="zoom-overlay" id="zoom-overlay" onclick="closeZoom()">
+    <img id="zoom-img" src="" alt="Enlarged Screen">
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+    let isSplitView = false;
+    let showNotes = true;
+
+    // Timer Variables
+    let timerSeconds = 0;
+    let timerRunning = true;
+    let timerInterval = null;
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!timerRunning) return;
+        timerSeconds++;
+        const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+        const secs = (timerSeconds % 60).toString().padStart(2, '0');
+        const display = document.getElementById('timer-display');
+        display.innerText = `${mins}:${secs} / 02:00`;
+
+        const pill = document.getElementById('timer-pill');
+        if (timerSeconds >= 90) {
+          pill.classList.add('timer-warning');
+        } else {
+          pill.classList.remove('timer-warning');
+        }
+      }, 1000);
+    }
+
+    function toggleTimer() {
+      timerRunning = !timerRunning;
+    }
+
+    function updateSlide() {
+      // Update Slide Display
+      document.querySelectorAll('.slide-wrapper').forEach((el, idx) => {
+        el.classList.toggle('active', idx + 1 === currentSlide);
+      });
+
+      // Update Screen Counter
+      document.getElementById('screen-counter').innerText = `Screen ${currentSlide} / ${totalSlides}`;
+
+      // Update Navigation Buttons
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').innerText = currentSlide === totalSlides ? 'Finish 🎉' : 'Next ▶';
+
+      // Update Bottom Thumbnails
+      document.querySelectorAll('.thumb-item').forEach((el, idx) => {
+        el.classList.toggle('active', idx + 1 === currentSlide);
+        if (idx + 1 === currentSlide) {
+          el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(num) {
+      if (num >= 1 && num <= totalSlides) {
+        currentSlide = num;
+        updateSlide();
+      }
+    }
+
+    function toggleViewMode() {
+      isSplitView = !isSplitView;
+      document.body.className = isSplitView ? 'view-split' : 'view-theater';
+      document.getElementById('view-mode-label').innerText = isSplitView ? 'Theater View' : 'Split View';
+      document.getElementById('btn-view-mode').classList.toggle('btn-active', isSplitView);
+    }
+
+    function toggleNotes() {
+      showNotes = !showNotes;
+      document.querySelectorAll('.teleprompter-bar').forEach(el => {
+        el.style.display = showNotes ? 'flex' : 'none';
+      });
+      document.getElementById('btn-notes').classList.toggle('btn-active', showNotes);
+    }
+
+    function handleStageClick(e) {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.teleprompter-bar') || e.target.closest('.image-showcase')) return;
+      nextSlide();
+    }
+
+    function openZoom(src) {
+      const overlay = document.getElementById('zoom-overlay');
+      const img = document.getElementById('zoom-img');
+      img.src = src;
+      overlay.classList.add('active');
+    }
+
+    function closeZoom() {
+      document.getElementById('zoom-overlay').classList.remove('active');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.code === 'ArrowRight' || e.code === 'Space' || e.code === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.code === 'ArrowLeft' || e.code === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.code === 'KeyT') {
+        toggleViewMode();
+      } else if (e.code === 'KeyN') {
+        toggleNotes();
+      } else if (e.code === 'KeyF' || e.code === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.code === 'Escape') {
+        closeZoom();
+      } else if (e.key >= '1' && e.key <= '8') {
+        goToSlide(parseInt(e.key, 10));
+      }
+    });
+
+    // Start on Screen 1
+    updateSlide();
+    startTimer();
+  </script>
+</body>
+</html>

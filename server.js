@@ -594,6 +594,10 @@ const server = http.createServer((req, res) => {
     filePath = path.join(__dirname, "public", "presentation.html");
   }
 
+  if (pathname === "/slides" || pathname === "/deck" || pathname === "/presenter") {
+    filePath = path.join(__dirname, "public", "slides.html");
+  }
+
   // Serve media files if requested from /media/
   if (pathname.startsWith("/media/")) {
     filePath = path.join(__dirname, pathname);
