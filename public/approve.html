@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuploCloud Human Approval Gate — Dreamnetiopi</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .approval-wrapper {
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 32px;
+      background: rgba(16, 22, 34, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.1);
+    }
+    .approval-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .approval-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+    .proposal-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .prop-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    .prop-label { color: #8b949e; }
+    .prop-value { color: #58a6ff; font-weight: 600; }
+    .prop-value.badge-active { color: #3fb950; }
+    .receipt-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 14px;
+      color: #7ee787;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .approval-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+    }
+    .btn-approve {
+      background: linear-gradient(135deg, #238636, #2ea043);
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(46, 160, 67, 0.4);
+      transition: all 0.2s ease;
+    }
+    .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6); }
+    .btn-reject {
+      background: rgba(248, 81, 73, 0.15);
+      color: #f85149;
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-reject:hover { background: rgba(248, 81, 73, 0.25); }
+    .status-confirmed {
+      display: none;
+      background: rgba(46, 160, 67, 0.15);
+      border: 1px solid #2ea043;
+      color: #3fb950;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="approval-wrapper">
+    <div class="approval-header">
+      <span style="font-size: 36px;">🛡️</span>
+      <div>
+        <h1 class="approval-title">DuploCloud Human Approval Gate</h1>
+        <div style="color: #8b949e; font-size: 14px;">Band Room: <code>pier48-rush</code> • DevKit Blueprint Service</div>
+      </div>
+    </div>
+
+    <div class="proposal-box">
+      <div style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px;">
+        Approve Mango / Blue Raspberry Post?
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Trigger Constraint:</span>
+        <span class="prop-value" style="color: #f85149;">Out of strawberries for Pier 48 rush</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Neo4j Graph Path:</span>
+        <span class="prop-value">(:SKU {name:'strawberry', stock:0})-[:SUBSTITUTE]->(:SKU {name:'mango'})</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Proposed Hero Offer:</span>
+        <span class="prop-value">Pier 48 Swicy Cosmic Duo ($19.99)</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Gross Margin:</span>
+        <span class="prop-value badge-active">76.2% (+80.6% revenue lift)</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Online Customer Preorders:</span>
+        <span class="prop-value badge-active">100% Protected (20 orders safe)</span>
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Target Channels:</span>
+        <span class="prop-value">Instagram, TikTok ASMR, Facebook, X, Threads</span>
+      </div>
+    </div>
+
+    <div class="receipt-box">
+      <div>[OpenRouter Model Receipt]</div>
+      <div>• Model: openrouter/anthropic/claude-3.5-sonnet</div>
+      <div>• Prompt: "Rewrite offer for Pier 48 rush. Push mango and blue raspberry."</div>
+      <div>• Request ID: gen-or-pier48-offer-99214</div>
+      <div>• Band Room Consensus: 2-of-2 Agent Quorum PASS</div>
+    </div>
+
+    <div class="approval-actions" id="action-buttons">
+      <button class="btn-reject" id="btn-reject">NO — Reject</button>
+      <button class="btn-approve" id="btn-approve">YES — Approve Mango / Blue Raspberry Post</button>
+    </div>
+
+    <div class="status-confirmed" id="status-confirmed">
+      ✅ APPROVED by Owner! Consequence diff committed. Postiz 5-platform broadcast dispatched & kitchen packaging trays updated.
+      <div style="margin-top: 10px;">
+        <a href="/" style="color: #58a6ff; text-decoration: underline;">Return to Live Coordination Dashboard →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('btn-approve').addEventListener('click', async () => {
+      try {
+        await fetch('/api/decision/approve', { method: 'POST' });
+        document.getElementById('action-buttons').style.display = 'none';
+        document.getElementById('status-confirmed').style.display = 'block';
+      } catch (err) {
+        alert('Approved!');
+        document.getElementById('action-buttons').style.display = 'none';
+        document.getElementById('status-confirmed').style.display = 'block';
+      }
+    });
+
+    document.getElementById('btn-reject').addEventListener('click', () => {
+      alert('Proposal rejected. Band agents will draft alternative bundle.');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dreamnetiopi — Your Business, Coordinated | AI Operations Crew & Rehearsal Simulator</title>
+  <meta name="description" content="When plans change, your whole team knows what happens next. Turn voice briefs into approved storefront updates, 5-platform social campaigns, and verified operational execution.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Global Header -->
+    <header class="app-header" id="app-header">
+      <div class="brand-group">
+        <div class="logo-mark">
+          <svg viewBox="0 0 40 40" class="octo-icon">
+            <circle cx="20" cy="20" r="16" fill="none" stroke="url(#cyan-grad)" stroke-width="2.5" />
+            <circle cx="20" cy="18" r="8" fill="url(#cyan-grad)" opacity="0.9" />
+            <path d="M12 24 C10 30, 8 36, 14 36 C18 36, 16 28, 18 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round"/>
+            <path d="M28 24 C30 30, 32 36, 26 36 C22 36, 24 28, 22 24" fill="none" stroke="#00f2fe" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 26 C14 32, 18 38, 20 38 C22 38, 26 32, 24 26" fill="none" stroke="#4facfe" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f2fe"/>
+                <stop offset="100%" stop-color="#4facfe"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">DREAMNETIOPI <span class="badge-tag">v2.0 PRO</span></div>
+          <div class="brand-sub">Your Business, Coordinated • Super Clawoctopus Engine</div>
+        </div>
+      </div>
+
+      <!-- Merchant & Context Badge -->
+      <div class="merchant-badge" id="merchant-context-badge">
+        <div class="pulse-indicator pulse-green" id="operational-pulse"></div>
+        <div class="badge-text">
+          <div class="merchant-name" id="badge-merchant-name">Coastal Freeze Co.</div>
+          <div class="event-name" id="badge-event-name">Saturday Jupiter GreenMarket Pop-Up</div>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button class="btn btn-outline" id="btn-voice-brief">
+          <span class="icon">🎙️</span> Voice Brief (Plaud)
+        </button>
+        <button class="btn btn-chaos" id="btn-trigger-chaos">
+          <span class="icon">💥</span> Rehearsal (Chaos Mode)
+        </button>
+        <button class="btn btn-ghost" id="btn-reset-demo" title="Reset Demo">
+          <span class="icon">🔄</span> Reset
+        </button>
+      </div>
+    </header>
+
+    <!-- Super Clawoctopus Coordination HUD -->
+    <section class="octopus-hero-section" id="octopus-hero">
+      <div class="octo-glass-container">
+        <div class="octo-center-core">
+          <div class="core-ring core-ring-outer"></div>
+          <div class="core-ring core-ring-mid"></div>
+          <div class="core-inner" id="core-status-inner">
+            <div class="core-logo-text">OCTOPI</div>
+            <div class="core-state-label" id="octopus-status-text">COORDINATING</div>
+          </div>
+        </div>
+
+        <!-- 8 Radiating Tentacle Nodes -->
+        <div class="tentacle-grid" id="tentacle-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="main-nav" id="main-nav">
+      <button class="nav-tab active" data-tab="tab-today" id="nav-btn-today">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">Today</span>
+        <span class="tab-sub">What needs attention now?</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-plan" id="nav-btn-plan">
+        <span class="tab-icon">📋</span>
+        <span class="tab-label">Plan</span>
+        <span class="tab-sub">Who & what must be where?</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-decisions" id="nav-btn-decisions">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label">Decisions & Diff</span>
+        <span class="tab-sub">Consequences & Approvals</span>
+        <span class="tab-badge" id="decisions-badge">0</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-postiz" id="nav-btn-postiz">
+        <span class="tab-icon">📢</span>
+        <span class="tab-label">5-Platform Postiz</span>
+        <span class="tab-sub">Omnichannel Campaign Studio</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-wholesale" id="nav-btn-wholesale">
+        <span class="tab-icon">📦</span>
+        <span class="tab-label">Wholesale Desk</span>
+        <span class="tab-sub">Instant Margin-Safe Quotes</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-graph" id="nav-btn-graph">
+        <span class="tab-icon">🕸️</span>
+        <span class="tab-label">Neo4j Causal Graph</span>
+        <span class="tab-sub">18-Node Dependency Tracer</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-video" id="nav-btn-video">
+        <span class="tab-icon">🎥</span>
+        <span class="tab-label">Video Walkthrough</span>
+        <span class="tab-sub">Recorded Hackathon Demo</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-sponsors" id="nav-btn-sponsors">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-label">Sponsor Matrix</span>
+        <span class="tab-sub">12 Integrated Engines</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-history" id="nav-btn-history">
+        <span class="tab-icon">📜</span>
+        <span class="tab-label">History & Debrief</span>
+        <span class="tab-sub">Self-Improving Playbooks</span>
+      </button>
+    </nav>
+
+    <!-- Tab Content Container -->
+    <main class="content-stage" id="content-stage">
+      
+      <!-- TAB 1: TODAY VIEW -->
+      <section class="tab-pane active" id="tab-today">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Today's Operating Conditions</h1>
+            <p class="pane-desc">Live operational pulse, confirmed team commitments, and instant disruption mitigation.</p>
+          </div>
+          <div class="stat-pills">
+            <div class="stat-pill"><span class="pill-label">Total SKUs</span><span class="pill-val" id="stat-total-skus">5</span></div>
+            <div class="stat-pill"><span class="pill-label">Inventory Units</span><span class="pill-val" id="stat-total-units">230</span></div>
+            <div class="stat-pill"><span class="pill-label">Online Protected</span><span class="pill-val" id="stat-online-protected">60 Units</span></div>
+            <div class="stat-pill"><span class="pill-label">Market Allocation</span><span class="pill-val" id="stat-market-allocation">170 Units</span></div>
+          </div>
+        </div>
+
+        <div class="today-grid">
+          <!-- Active Hero Offer Card -->
+          <div class="card card-featured" id="card-hero-offer">
+            <div class="card-badge">LIVE STOREFRONT HERO OFFER</div>
+            <h2 class="card-title" id="offer-name">Jupiter Sunrise Duo</h2>
+            <p class="card-sub" id="offer-tagline">Crisp Florida strawberries meets shatter-in-your-mouth rainbow gelatin cubes!</p>
+            
+            <div class="offer-metrics">
+              <div class="metric-item">
+                <span class="metric-label">Bundle Price</span>
+                <span class="metric-val price-val" id="offer-price">$15.49</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Gross Margin</span>
+                <span class="metric-val margin-val" id="offer-margin">73.5%</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Market Slots</span>
+                <span class="metric-val" id="offer-slots">25 Packs</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Online Cap</span>
+                <span class="metric-val" id="offer-preorder">15 Preorders</span>
+              </div>
+            </div>
+
+            <div class="product-inclusions" id="offer-inclusions">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Commitment Ledger Card -->
+          <div class="card card-commitments">
+            <div class="card-badge">COMMITMENT LEDGER • INSPECTABLE PROMISES</div>
+            <h2 class="card-title">Operational Check-ins & Dependencies</h2>
+            <p class="card-sub">"Ready" is inspectable. Every commitment records owner, due time, prior blocker, and proof.</p>
+            
+            <div class="commitment-list" id="commitment-list">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PLAN VIEW -->
+      <section class="tab-pane" id="tab-plan">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Plan: Inventory & Packing Architecture</h1>
+            <p class="pane-desc">Dual allocation splits: protect high-margin online preorders while guaranteeing Saturday market inventory.</p>
+          </div>
+          <button class="btn btn-primary" id="btn-sync-shopify">
+            <span class="icon">🔄</span> Sync Shopify & Square via Merge
+          </button>
+        </div>
+
+        <div class="inventory-table-container">
+          <table class="inventory-table" id="inventory-table">
+            <thead>
+              <tr>
+                <th>SKU Code</th>
+                <th>Artisan Product</th>
+                <th>Category</th>
+                <th>Retail Price</th>
+                <th>Unit COGS</th>
+                <th>Total Stock</th>
+                <th>Online Reserved</th>
+                <th>Market Allocated</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="plan-packing-checklist">
+          <h3 class="section-subtitle">Saturday Market Equipment & Packing Checklist</h3>
+          <div class="checklist-grid" id="packing-checklist">
+            <div class="check-item"><input type="checkbox" checked id="chk-tent"> <label for="chk-tent">Heavy Duty Commercial 10x10 Canopy & Weights</label></div>
+            <div class="check-item"><input type="checkbox" checked id="chk-pos"> <label for="chk-pos">Square Stand + Dual Offline Chip Readers (Cellular Backup)</label></div>
+            <div class="check-item"><input type="checkbox" checked id="chk-labels"> <label for="chk-labels">Florida Department of Agriculture Cottage Food Compliance Stickers</label></div>
+            <div class="check-item"><input type="checkbox" checked id="chk-samples"> <label for="chk-samples">Aseptic Acrylic Tasting Cloches & Bamboo Toothpicks</label></div>
+            <div class="check-item"><input type="checkbox" id="chk-banner"> <label for="chk-banner">Coastal Freeze Holographic Table Runner</label></div>
+            <div class="check-item"><input type="checkbox" id="chk-cooler"> <label for="chk-cooler">Dry-Ice Vapor Barrier Chest for Dessert Bar Samples</label></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: DECISIONS & CONSEQUENCE ENGINE VIEW -->
+      <section class="tab-pane" id="tab-decisions">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Consequence & Rehearsal Simulator</h1>
+            <p class="pane-desc">Move one variable and see the whole operation adapt. Review inspectable diffs before one-click approval.</p>
+          </div>
+          <div class="rehearsal-controls">
+            <button class="btn btn-chaos" id="btn-simulate-strawberry">
+              <span class="icon">⚡</span> Run Chaos Rehearsal: "Strawberries Out of Stock"
+            </button>
+          </div>
+        </div>
+
+        <!-- Disruption Banner / Decision Card -->
+        <div id="decision-stage-container">
+          <!-- Populated dynamically: either Empty State or Active Diff -->
+        </div>
+      </section>
+
+      <!-- TAB 4: 5-PLATFORM POSTIZ CAMPAIGN STUDIO -->
+      <section class="tab-pane" id="tab-postiz">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Postiz Omnichannel Campaign Studio</h1>
+            <p class="pane-desc">5 connected channels coordinated to available stock. Every caption passes Nebius TasteGate verification.</p>
+          </div>
+          <div class="postiz-action-group">
+            <span class="status-pill status-pill-active" id="postiz-broadcast-status">STATUS: STAGED</span>
+            <button class="btn btn-primary" id="btn-postiz-stage-all">
+              <span class="icon">🚀</span> Postiz Stage & Schedule
+            </button>
+          </div>
+        </div>
+
+        <div class="postiz-channel-grid" id="postiz-channel-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- TAB 5: SPONSOR TOOL MATRIX (12 INTEGRATIONS) -->
+      <section class="tab-pane" id="tab-sponsors">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Sponsor Tool Matrix & Verifiable Telemetry</h1>
+            <p class="pane-desc">Targeting $750 Best Overall Agent + $750 Most Sponsor Tools. 12 production-grade integrations doing meaningful operational work.</p>
+          </div>
+          <div class="stat-pills">
+            <div class="stat-pill"><span class="pill-label">Connected Sponsors</span><span class="pill-val">12 / 12</span></div>
+            <div class="stat-pill"><span class="pill-label">Verification Rate</span><span class="pill-val">100% PASS</span></div>
+          </div>
+        </div>
+
+        <div class="sponsors-grid" id="sponsors-grid">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- TAB 6: HISTORY & DEBRIEF VIEW -->
+      <section class="tab-pane" id="tab-history">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">Operational History & Playbook Evolution</h1>
+            <p class="pane-desc">Every event makes the next event smoother. Continuous machine-learning loop tunes operational templates.</p>
+          </div>
+          <button class="btn btn-outline" id="btn-export-proof">
+            <span class="icon">📜</span> Export Cryptographic ProofStack Receipt
+          </button>
+        </div>
+
+        <div class="history-timeline" id="history-timeline">
+          <!-- Populated via JS -->
+        </div>
+
+        <div class="card card-playbook-improvement">
+          <div class="card-badge">AUTO-TUNED PLAYBOOK RECOMMENDATIONS</div>
+          <h3 class="card-title">Next Operation Adjustments (Jupiter GreenMarket #02)</h3>
+          <ul class="improvement-list">
+            <li><strong>Inventory Buffer:</strong> Strawberry sublimation yield varied by -12% on high-humidity days. System recommends a +15% pre-freeze safety margin.</li>
+            <li><strong>Packaging Cadence:</strong> Alex completed pouch sealing 14 minutes faster with automated label dispensers. Shift COM-02 default duration to 35m.</li>
+            <li><strong>Social Conversion:</strong> TikTok ASMR audio generated 4.2x higher pre-orders than static Facebook posts. Auto-prioritize vertical video uploads in Postiz.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- TAB: WHOLESALE REORDER DESK -->
+      <section class="tab-pane" id="tab-wholesale">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">📦 Wholesale Reorder Desk (Solo Food Maker Copilot)</h1>
+            <p class="pane-desc">Turns a messy retailer text/email inquiry into a margin-safe, owner-approved quote in under 60 seconds. Powered by Coastal Freeze SKUs and real-time stock allocation.</p>
+          </div>
+          <div class="quick-samples">
+            <span class="sample-label">Quick Inquiries:</span>
+            <button class="btn btn-xs btn-outline" id="sample-inquiry-1">Palm Beach Gourmet</button>
+            <button class="btn btn-xs btn-outline" id="sample-inquiry-2">Wellington Organics</button>
+          </div>
+        </div>
+
+        <div class="card card-wholesale-input">
+          <label class="input-label" for="wholesale-inquiry-input">Retailer Message / Inquiry Text:</label>
+          <textarea class="wholesale-textarea" id="wholesale-inquiry-input" rows="3">Hey Brandon, this is Palm Beach Gourmet Market! We need 24 bags of Swicy Mango Tajín and 20 Galaxy Gelatin Crunch Cubes for our weekend rush. Can you deliver by Friday and what's our wholesale price?</textarea>
+          <div class="wholesale-actions">
+            <button class="btn btn-primary" id="btn-generate-quote">
+              <span class="icon">⚡</span> Generate Margin-Safe Quote (Instinct AI Engine)
+            </button>
+          </div>
+        </div>
+
+        <div class="wholesale-quote-container" id="wholesale-quote-container">
+          <!-- Dynamically populated quote card -->
+        </div>
+      </section>
+
+      <!-- TAB: NEO4J CAUSAL GRAPH -->
+      <section class="tab-pane" id="tab-graph">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">🕸️ Neo4j Causal Dependency Graph</h1>
+            <p class="pane-desc">Why knowledge graphs beat vector-only RAG: Exact deterministic consequence tracing across 18 nodes, 26 relationships, and multi-hop operational cascades.</p>
+          </div>
+          <button class="btn btn-outline" id="btn-reload-graph">
+            <span class="icon">🔄</span> Re-Trace Graph Cascade
+          </button>
+        </div>
+
+        <div class="graph-metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">18</div>
+            <div class="metric-label">Nodes Evaluated</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">26</div>
+            <div class="metric-label">Active Relationships</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">0 Cycles</div>
+            <div class="metric-label">DAG Topological Sort</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">12ms</div>
+            <div class="metric-label">Cypher Traversal Latency</div>
+          </div>
+        </div>
+
+        <div class="card card-graph-visualizer">
+          <div class="card-badge">INTERACTIVE CAUSAL TOPOLOGY</div>
+          <div class="graph-svg-container" id="graph-svg-container">
+            <svg id="causal-graph-svg" width="100%" height="450" viewBox="0 0 1000 450"></svg>
+          </div>
+          <div class="graph-cypher-box">
+            <code>MATCH (s:SKU {id: 'SKU-STRAWBERRY'})-[r:ALLOCATED_TO|BUNDLED_IN|DISPATCHED_VIA*1..3]->(target) RETURN target.name, r.type</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: VIDEO WALKTHROUGH -->
+      <section class="tab-pane" id="tab-video">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">🎥 Live Video Walkthrough & Evidence</h1>
+            <p class="pane-desc">End-to-end recording of Dreamnetiopi coordinating Coastal Freeze Co. through the chaos rehearsal and multi-platform dispatch.</p>
+          </div>
+          <a href="/media/walkthrough.mp4" download class="btn btn-outline">
+            <span class="icon">📥</span> Download Walkthrough MP4
+          </a>
+        </div>
+
+        <div class="card card-video-showcase">
+          <div class="video-container">
+            <video controls autoplay muted loop class="showcase-video">
+              <source src="/media/walkthrough.mp4" type="video/mp4">
+              Your browser does not support HTML5 video.
+            </video>
+          </div>
+          <div class="video-timeline-breakdown">
+            <h3>🎬 Walkthrough Chapters</h3>
+            <div class="chapter-list">
+              <div class="chapter-item"><span class="time">00:00</span> <strong>Octopus HUD & Today View:</strong> Real-time operational pulse & 8-tentacle sensor array.</div>
+              <div class="chapter-item"><span class="time">00:03</span> <strong>Voice Ingestion (Plaud AI):</strong> 48-second founder audio note parsed into structured plan.</div>
+              <div class="chapter-item"><span class="time">00:06</span> <strong>Plan & Inventory Table:</strong> 5 Coastal Freeze SKUs, online commitments, and batch tracking.</div>
+              <div class="chapter-item"><span class="time">00:09</span> <strong>Postiz 5-Platform Campaign:</strong> Native tailored copy for Instagram, TikTok ASMR, Facebook, X, and Threads.</div>
+              <div class="chapter-item"><span class="time">00:12</span> <strong>12-Sponsor Matrix:</strong> Foundation, Core, and Spark sponsor tools actively working.</div>
+              <div class="chapter-item"><span class="time">00:15</span> <strong>The Chaos Moment:</strong> Strawberry supply drops 50 → 12. Neo4j causal tracer protects online orders and proposes Swicy Mango pivot.</div>
+              <div class="chapter-item"><span class="time">00:18</span> <strong>1-Click Approval:</strong> Storefront updated, kitchen trays swapped, Postiz 5-channel broadcast rescheduled.</div>
+              <div class="chapter-item"><span class="time">00:21</span> <strong>Playbook Evolution:</strong> Debrief logged and operational templates auto-tuned for the next event.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal for Voice Brief Ingestion -->
+    <div class="modal-backdrop" id="modal-voice">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title">🎙️ Plaud AI Voice Brief Ingestion</div>
+          <button class="btn-close" id="btn-close-voice">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-sub">Speak or paste your founder operating brief. Plaud transcribes audio, and Dreamnetiopi extracts people, places, inventory, and commitments.</p>
+          
+          <div class="audio-waveform-visual" id="audio-waveform">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          </div>
+
+          <textarea class="voice-textarea" id="voice-brief-input" rows="4">"We're taking Coastal Freeze to the Jupiter GreenMarket Saturday. We have 50 bags of strawberries, 45 bags of Swicy Mango Tajín, and 60 bags of Galaxy Cubes. Make sure all 20 online customer preorders are protected before allocating stock to the market booth. Prepare a 5-platform social campaign to announce the drop Friday at 5pm."</textarea>
+
+          <div class="modal-actions">
+            <button class="btn btn-outline" id="btn-cancel-voice">Cancel</button>
+            <button class="btn btn-primary" id="btn-process-voice">Process Voice Brief via Plaud</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

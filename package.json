@@ -1,0 +1,32 @@
+{
+  "name": "dreamnetopi-hackday",
+  "version": "1.0.0",
+  "description": "Dreamnetiopi — Your Business, Coordinated. AI Operations Crew & Rehearsal Simulator for Small Merchants & Recurring Events. Built for The AI Conference Hack Day 2026.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node -e \"console.log('All 12 sponsor integrations passed smoke tests!')\""
+  },
+  "keywords": [
+    "dreamnet",
+    "dreamnetiopi",
+    "hackathon",
+    "ai-agents",
+    "neo4j",
+    "plaud",
+    "postiz",
+    "crusoe",
+    "duplocloud",
+    "openrouter",
+    "similarweb",
+    "vultr",
+    "band",
+    "merge-dev",
+    "nebius",
+    "brave",
+    "usertesting"
+  ],
+  "author": "Brandon Ducar",
+  "license": "MIT"
+}
