@@ -1,5 +1,5 @@
 // Dreamnetiopi — Client Coordination Engine
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   let appState = null;
 
   // Cache DOM elements
@@ -89,17 +89,20 @@ document.addEventListener("DOMContentLoaded", () => {
     tentacleGrid.innerHTML = appState.octoArms.map(arm => {
       let badgeClass = "badge-synced";
       if (arm.status === "AWAITING_INPUT" || arm.status === "IDLE") badgeClass = "badge-ready";
-      if (appState.meta.operationalStatus === "REHEARSAL_ALERT" && (arm.id === "arm-graph" || arm.id === "arm-social" || arm.id === "arm-inventory")) {
+      if (appState.meta.operationalStatus === "REHEARSAL_ALERT" && (arm.id === "arm-graph" || arm.id === "arm-social" || arm.id === "arm-inventory" || arm.armId === 4 || arm.armId === 5 || arm.armId === 6)) {
         badgeClass = "badge-alert";
       }
+      const labelText = `${arm.icon ? arm.icon + ' ' : ''}${arm.name || arm.label || 'Agent Node'}`;
+      const systemText = arm.sponsor || arm.system || 'Autonomous Agent';
+      const detailText = arm.desc || arm.detail || 'Operational';
       return `
         <div class="tentacle-card">
           <div class="tentacle-top">
-            <span class="tentacle-label">${arm.label}</span>
+            <span class="tentacle-label">${labelText}</span>
             <span class="tentacle-status-badge ${badgeClass}">${arm.status}</span>
           </div>
-          <div class="tentacle-system">${arm.system}</div>
-          <div class="tentacle-detail">${arm.detail}</div>
+          <div class="tentacle-system">${systemText}</div>
+          <div class="tentacle-detail">${detailText}</div>
         </div>
       `;
     }).join("");
@@ -114,10 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     offerInclusions.innerHTML = appState.currentOffer.featuredProducts.map(pName => {
       const prod = appState.inventory.find(i => i.name === pName);
+      const priceVal = prod ? (prod.retailPrice ?? prod.price ?? 0) : 0;
       return `
         <div class="inclusion-row">
           <span class="inc-name">📦 ${pName}</span>
-          <span class="inc-detail">${prod ? `$${prod.price.toFixed(2)} retail • Stock: ${prod.totalStock}` : 'Active Listing'}</span>
+          <span class="inc-detail">${prod ? `$${priceVal.toFixed(2)} retail • Stock: ${prod.totalStock}` : 'Active Listing'}</span>
         </div>
       `;
     }).join("");
@@ -142,13 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Render Plan View (Inventory Table)
     inventoryTbody.innerHTML = appState.inventory.map(item => {
       const isDeficit = item.status === "DEFICIT_PROTECTED";
+      const priceVal = item.retailPrice ?? item.price ?? 0;
+      const costVal = item.unitCost ?? item.cost ?? 0;
       return `
         <tr>
           <td class="sku-code">${item.id}</td>
           <td class="product-name">${item.name}</td>
           <td>${item.category}</td>
-          <td>$${item.price.toFixed(2)}</td>
-          <td>$${item.cost.toFixed(2)}</td>
+          <td>$${priceVal.toFixed(2)}</td>
+          <td>$${costVal.toFixed(2)}</td>
           <td><span class="stock-pill ${isDeficit ? 'stock-deficit' : ''}">${item.totalStock} units</span></td>
           <td>${item.onlineReserved} units</td>
           <td><strong>${item.marketAllocated} units</strong></td>

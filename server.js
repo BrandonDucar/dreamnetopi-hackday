@@ -427,21 +427,21 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (pathname === "/api/chaos/strawberry-shortage" && req.method === "POST") {
+  if ((pathname === "/api/chaos/strawberry-shortage" || pathname === "/api/rehearse/chaos") && req.method === "POST") {
     const updated = injectStrawberryChaos();
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ ok: true, state: updated, message: "Rehearsal disruption triggered: Strawberry shortage propagated through Neo4j graph." }));
     return;
   }
 
-  if (pathname === "/api/decision/approve" && req.method === "POST") {
+  if ((pathname === "/api/decision/approve" || pathname === "/api/approve") && req.method === "POST") {
     const updated = approveDecision();
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ ok: true, state: updated, message: "Consequence diff approved! Storefront updated, Postiz 5-platform broadcast scheduled." }));
     return;
   }
 
-  if (pathname === "/api/decision/reset" && req.method === "POST") {
+  if ((pathname === "/api/decision/reset" || pathname === "/api/reset") && req.method === "POST") {
     state = JSON.parse(JSON.stringify(INITIAL_STATE));
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ ok: true, state, message: "Reset to initial state." }));
@@ -500,18 +500,48 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (pathname === "/api/wholesale/quote" && req.method === "POST") {
+  if (pathname === "/api/wholesale/quote") {
+    if (req.method === "GET") {
+      const quote = processWholesaleInquiry("Hey Brandon, this is Palm Beach Gourmet Market. Can we get 24 bags of your Swicy Mango Tajín and 20 Galaxy Gelatin for our Friday weekend rush? Need wholesale pricing!");
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: true, quote }));
+      return;
+    }
+    if (req.method === "POST") {
+      let body = "";
+      req.on("data", chunk => { body += chunk; });
+      req.on("end", () => {
+        let inquiry = "Hey Brandon, this is Palm Beach Gourmet Market. Can we get 24 bags of your Swicy Mango Tajín and 20 Galaxy Gelatin for our Friday weekend rush? Need wholesale pricing!";
+        try {
+          const json = JSON.parse(body || "{}");
+          if (json.text) inquiry = json.text;
+        } catch (e) {}
+        const quote = processWholesaleInquiry(inquiry);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true, quote }));
+      });
+      return;
+    }
+  }
+
+  if (pathname === "/api/wholesale/accept" && req.method === "POST") {
     let body = "";
     req.on("data", chunk => { body += chunk; });
     req.on("end", () => {
-      let inquiry = "Hey Brandon, this is Palm Beach Gourmet Market. Can we get 24 bags of your Swicy Mango Tajín and 20 Galaxy Gelatin for our Friday weekend rush? Need wholesale pricing!";
+      let quoteId = "WHQ-SAMPLE";
       try {
         const json = JSON.parse(body || "{}");
-        if (json.text) inquiry = json.text;
+        if (json.quoteId) quoteId = json.quoteId;
       } catch (e) {}
-      const quote = processWholesaleInquiry(inquiry);
       res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ ok: true, quote }));
+      res.end(JSON.stringify({
+        ok: true,
+        quoteId,
+        status: "ACCEPTED",
+        inventoryLocked: true,
+        stripeInvoiceUrl: "https://buy.stripe.com/test_coastal_freeze_b2b_sample",
+        shopifyDraftOrderId: "DRAFT-88219"
+      }));
     });
     return;
   }
