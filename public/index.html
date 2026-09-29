@@ -101,6 +101,11 @@
         <span class="tab-label">5-Platform Postiz</span>
         <span class="tab-sub">Omnichannel Campaign Studio</span>
       </button>
+      <button class="nav-tab" data-tab="tab-plaud" id="nav-btn-plaud">
+        <span class="tab-icon">🎙️</span>
+        <span class="tab-label">Plaud Voice Deck</span>
+        <span class="tab-sub">NotePin S Hands-Free Ops</span>
+      </button>
       <button class="nav-tab" data-tab="tab-wholesale" id="nav-btn-wholesale">
         <span class="tab-icon">📦</span>
         <span class="tab-label">Wholesale Desk</span>
@@ -318,6 +323,108 @@
             <li><strong>Packaging Cadence:</strong> Alex completed pouch sealing 14 minutes faster with automated label dispensers. Shift COM-02 default duration to 35m.</li>
             <li><strong>Social Conversion:</strong> TikTok ASMR audio generated 4.2x higher pre-orders than static Facebook posts. Auto-prioritize vertical video uploads in Postiz.</li>
           </ul>
+        </div>
+      </section>
+
+      <!-- TAB: PLAUD WEARABLE VOICE DECK -->
+      <section class="tab-pane" id="tab-plaud">
+        <div class="pane-header">
+          <div class="pane-title-group">
+            <h1 class="pane-title">🎙️ Plaud NotePin S Wearable Voice Deck</h1>
+            <p class="pane-desc">Hands-free kitchen & freeze-dry operations. When you have gloves on handling frozen fruit and vacuum pumps, speak your inventory, batch telemetry, and recipe ideas.</p>
+          </div>
+          <div class="plaud-device-badge">
+            <span class="badge-dot badge-dot-active"></span>
+            <strong>Plaud NotePin S</strong> • BLE 5.3 Connected (94% Battery)
+          </div>
+        </div>
+
+        <!-- 4 Presets Grid -->
+        <div class="plaud-presets-grid">
+          <div class="plaud-card active" data-preset="INVENTORY_COUNT" id="preset-card-inventory">
+            <div class="plaud-card-header">
+              <span class="plaud-icon">📦</span>
+              <div>
+                <h3 class="plaud-card-title">Inventory Tray Count</h3>
+                <span class="plaud-card-sub">Harvest Right Sublimation Trays</span>
+              </div>
+            </div>
+            <p class="plaud-snippet">"Strawberries yielded light due to condensation—only 12 bags ready. Mango came out massive at 65 bags. Protect 20 online preorders..."</p>
+            <button class="btn btn-xs btn-primary">Process Voice Ingestion</button>
+          </div>
+
+          <div class="plaud-card" data-preset="FREEZE_DRY_LOG" id="preset-card-freeze-dry">
+            <div class="plaud-card-header">
+              <span class="plaud-icon">❄️</span>
+              <div>
+                <h3 class="plaud-card-title">Freeze Dry Run QC Log</h3>
+                <span class="plaud-card-sub">Batch #28 Cycle Telemetry</span>
+              </div>
+            </div>
+            <p class="plaud-snippet">"Cycle completed at 34h 18m. Vacuum steady at 122 mTorr. Moisture 1.4%. Texture test is 10/10 glass shatter with zero gummy core..."</p>
+            <button class="btn btn-xs btn-outline">Process Voice Ingestion</button>
+          </div>
+
+          <div class="plaud-card" data-preset="RECIPE_RD" id="preset-card-recipe">
+            <div class="plaud-card-header">
+              <span class="plaud-icon">🌶️</span>
+              <div>
+                <h3 class="plaud-card-title">Recipe & Flavor R&D</h3>
+                <span class="plaud-card-sub">Finishing Dust & Spice Formulas</span>
+              </div>
+            </div>
+            <p class="plaud-snippet">"On Georgia Gold Peach crisps, test a 2:1 ratio of Tajín Classico to micro-planed Key Lime zest. Run a test tray of 10 bags at $8.99..."</p>
+            <button class="btn btn-xs btn-outline">Process Voice Ingestion</button>
+          </div>
+
+          <div class="plaud-card" data-preset="BAND_MISSION_BRIEF" id="preset-card-band">
+            <div class="plaud-card-header">
+              <span class="plaud-icon">🚀</span>
+              <div>
+                <h3 class="plaud-card-title">Band Mission Directive</h3>
+                <span class="plaud-card-sub">Pier 48 Rush Room Direct Handoff</span>
+              </div>
+            </div>
+            <p class="plaud-snippet">"@offer-desk Out of strawberries for Pier 48 rush. Push mango and blue raspberry. Rewrite offer. Do not publish..."</p>
+            <button class="btn btn-xs btn-outline">Process Voice Ingestion</button>
+          </div>
+        </div>
+
+        <!-- Live Waveform & Inspection View -->
+        <div class="card card-plaud-stream" id="plaud-stream-card">
+          <div class="stream-header">
+            <div class="speaker-tag">
+              <span class="speaker-icon">🗣️</span> Speaker Diarization: <strong id="plaud-speaker-name">Brandon Ducar (Kitchen Lead)</strong>
+            </div>
+            <div class="confidence-tag" id="plaud-confidence">
+              Acoustic Confidence: <strong>99.4%</strong> (Plaud Whisper Large v3 Turbo)
+            </div>
+          </div>
+
+          <div class="plaud-waveform-box">
+            <div class="waveform-anim" id="plaud-anim-bars">
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+              <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+            </div>
+            <div class="transcript-display" id="plaud-transcript-text">
+              "Tray inspection for Batch 26 just finished. Strawberries yielded light due to chamber condensation—we only have 12 bags ready for market. But Swicy Mango Tajín trays came out massive, at least 65 bags in prime crunch shape. Galaxy Gelatin is rock solid at 80 bags. Protect our 20 online preorders first, zero out strawberries for the market booth, and push the mango."
+            </div>
+          </div>
+
+          <div class="extracted-entities-container" id="plaud-entities-display">
+            <!-- Dynamically populated entity tags -->
+          </div>
+
+          <div class="plaud-action-bar">
+            <button class="btn btn-outline" id="btn-transmit-band-room">
+              <span class="icon">📡</span> Transmit Directly to Band Room (pier48-rush)
+            </button>
+            <button class="btn btn-primary" id="btn-apply-inventory-live">
+              <span class="icon">✅</span> Apply Extracted SKU Counts to Live Inventory
+            </button>
+          </div>
         </div>
       </section>
 

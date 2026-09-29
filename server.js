@@ -448,11 +448,52 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (pathname === "/api/plaud/status") {
+    const plaudModule = require('./integrations/plaud');
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ ok: true, device: plaudModule.DEVICE_STATUS, presets: Object.keys(plaudModule.VOICE_PRESETS) }));
+    return;
+  }
+
+  if (pathname === "/api/plaud/process" && req.method === "POST") {
+    let body = "";
+    req.on("data", chunk => { body += chunk; });
+    req.on("end", () => {
+      let preset = "INVENTORY_COUNT";
+      let text = null;
+      try {
+        const json = JSON.parse(body || "{}");
+        if (json.preset) preset = json.preset;
+        if (json.text) text = json.text;
+      } catch (e) {}
+
+      const plaudModule = require('./integrations/plaud');
+      const result = plaudModule.processAudioStream(preset, text);
+
+      if (preset === "INVENTORY_COUNT" && result.entities && result.entities.skuUpdates) {
+        result.entities.skuUpdates.forEach(up => {
+          const item = state.inventory.find(i => i.id === up.sku);
+          if (item) {
+            item.totalStock = up.available;
+            if (up.marketAllocated !== undefined) item.marketAllocated = up.marketAllocated;
+            if (up.onlineReserved !== undefined) item.onlineReserved = up.onlineReserved;
+            if (up.status) item.status = up.status;
+          }
+        });
+      }
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: true, result, state }));
+    });
+    return;
+  }
+
   if (pathname === "/api/voice-brief" && req.method === "POST") {
     let body = "";
     req.on("data", chunk => { body += chunk; });
     req.on("end", () => {
-      const data = sponsors.plaud.transcribeVoiceBrief();
+      const plaudModule = require('./integrations/plaud');
+      const data = plaudModule.processAudioStream("BAND_MISSION_BRIEF");
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ ok: true, ...data }));
     });
@@ -535,11 +576,22 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (pathname === "/api/crusoe/status") {
+    const crusoe = require('./integrations/crusoe');
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(crusoe.getCrusoeTelemetry()));
+    return;
+  }
+
   // Static File Serving
   let filePath = path.join(__dirname, "public", pathname === "/" ? "index.html" : pathname);
 
   if (pathname === "/approve") {
     filePath = path.join(__dirname, "public", "approve.html");
+  }
+
+  if (pathname === "/demo" || pathname === "/presentation") {
+    filePath = path.join(__dirname, "public", "presentation.html");
   }
 
   // Serve media files if requested from /media/

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dreamnetiopi — 90-Second Demo Presentation | The AI Conference 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #07090e;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    header {
+      background: rgba(13, 17, 23, 0.95);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo { font-size: 28px; }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #00f0ff, #ff0077);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-sub {
+      font-size: 13px;
+      color: #8b949e;
+    }
+    .sponsor-pill-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .spill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .spill-foundation { background: rgba(0, 255, 157, 0.15); color: #00ff9d; border: 1px solid #00ff9d; }
+    .spill-core { background: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid #00f0ff; }
+    .spill-spark { background: rgba(255, 0, 119, 0.15); color: #ff0077; border: 1px solid #ff0077; }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-play-hero {
+      background: linear-gradient(135deg, #00f0ff, #0077ff);
+      color: #07090e;
+      font-size: 16px;
+      padding: 12px 26px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+    .btn-play-hero:hover { transform: scale(1.04); box-shadow: 0 0 30px rgba(0, 240, 255, 0.8); }
+    .btn-fs {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-fs:hover { background: rgba(255, 255, 255, 0.15); }
+    .btn-link {
+      background: transparent;
+      color: #58a6ff;
+      text-decoration: underline;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .cinema-frame {
+      width: 100%;
+      max-width: 1360px;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.15);
+      position: relative;
+    }
+
+    video.cinema-screen {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 16 / 10;
+      background: #000;
+    }
+
+    /* Live Chapters Bar */
+    .chapter-bar-container {
+      background: rgba(13, 17, 23, 0.95);
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .chapter-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ch-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #8b949e;
+      cursor: pointer;
+    }
+    .ch-tag:hover { background: rgba(0, 240, 255, 0.2); color: #00f0ff; }
+    .ch-tag.active { background: #00f0ff; color: #07090e; font-weight: 700; }
+    .time-readout {
+      font-family: ui-monospace, monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #00f0ff;
+    }
+
+    /* Judge Cheat Sheet / Quick Links Footer */
+    .cheat-sheet-dock {
+      width: 100%;
+      max-width: 1360px;
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .dock-card {
+      background: rgba(16, 22, 34, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+    }
+    .dock-card strong { color: #fff; display: block; margin-bottom: 4px; }
+    .dock-card a { color: #58a6ff; text-decoration: none; font-weight: 600; }
+    .dock-card a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-logo">🐙</div>
+      <div>
+        <div class="brand-title">DREAMNETIOPI</div>
+        <div class="brand-sub">The AI Conference Hack Day 2026 • Pier 48 Shed B</div>
+      </div>
+    </div>
+
+    <div class="sponsor-pill-row">
+      <span class="spill spill-foundation">Crusoe ($5k Clean Infra)</span>
+      <span class="spill spill-core">Band (Quorum)</span>
+      <span class="spill spill-core">OpenRouter</span>
+      <span class="spill spill-core">Neo4j</span>
+      <span class="spill spill-core">DuploCloud</span>
+      <span class="spill spill-core">Plaud AI</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-fs" id="btn-fs">⛶ Fullscreen (F11)</button>
+      <button class="btn btn-play-hero" id="btn-play">▶ PLAY 90s DEMO</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="cinema-frame" id="cinema-frame">
+      <video id="demo-video" class="cinema-screen" playsinline preload="auto">
+        <source src="/media/walkthrough_90s.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+
+      <div class="chapter-bar-container">
+        <div class="chapter-tags">
+          <span class="ch-tag" onclick="jumpTo(0)">00:00 HUD</span>
+          <span class="ch-tag" onclick="jumpTo(12)">00:12 Plaud NotePin</span>
+          <span class="ch-tag" onclick="jumpTo(24)">00:24 Inventory</span>
+          <span class="ch-tag" onclick="jumpTo(34)">00:34 Band pier48-rush</span>
+          <span class="ch-tag" onclick="jumpTo(46)">00:46 Neo4j + OpenRouter</span>
+          <span class="ch-tag" onclick="jumpTo(58)">00:58 Crusoe Compute</span>
+          <span class="ch-tag" onclick="jumpTo(70)">01:10 Duplo Gate</span>
+          <span class="ch-tag" onclick="jumpTo(80)">01:20 Postiz & Wholesale</span>
+        </div>
+        <div class="time-readout" id="time-display">00:00 / 01:30</div>
+      </div>
+    </div>
+
+    <div class="cheat-sheet-dock">
+      <div class="dock-card">
+        <strong>1. Band Coordination Room</strong>
+        Room <code>pier48-rush</code> • <a href="javascript:runBandProof()">Run Replay Terminal Proof</a>
+      </div>
+      <div class="dock-card">
+        <strong>2. DuploCloud Human Gate</strong>
+        Live 1-click form • <a href="/approve" target="_blank">Open /approve</a>
+      </div>
+      <div class="dock-card">
+        <strong>3. Coastal Freeze Live Hub</strong>
+        Full UI & Wholesale Desk • <a href="/" target="_blank">Open Main Dashboard</a>
+      </div>
+      <div class="dock-card">
+        <strong>4. GitHub Repository</strong>
+        All code & receipts • <a href="https://github.com/BrandonDucar/dreamnetopi-hackday" target="_blank">github.com/BrandonDucar/dreamnetopi-hackday</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const video = document.getElementById('demo-video');
+    const btnPlay = document.getElementById('btn-play');
+    const timeDisplay = document.getElementById('time-display');
+
+    btnPlay.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        btnPlay.innerHTML = '⏸ PAUSE DEMO';
+      } else {
+        video.pause();
+        btnPlay.innerHTML = '▶ RESUME DEMO';
+      }
+    });
+
+    video.addEventListener('timeupdate', () => {
+      const cur = Math.floor(video.currentTime);
+      const m = Math.floor(cur / 60).toString().padStart(2, '0');
+      const s = (cur % 60).toString().padStart(2, '0');
+      timeDisplay.innerText = `${m}:${s} / 01:30`;
+    });
+
+    video.addEventListener('ended', () => {
+      btnPlay.innerHTML = '🔄 REPLAY DEMO';
+    });
+
+    function jumpTo(sec) {
+      video.currentTime = sec;
+      video.play();
+      btnPlay.innerHTML = '⏸ PAUSE DEMO';
+    }
+
+    document.getElementById('btn-fs').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Spacebar toggles play/pause
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        btnPlay.click();
+      }
+    });
+
+    function runBandProof() {
+      fetch('/api/band/room').then(r => r.json()).then(d => {
+        alert('Band Room pier48-rush Replayed!\nQuorum consensus verified.\nOpenRouter model: ' + d.openRouterProof.modelsUsed.join(', '));
+      });
+    }
+  </script>
+</body>
+</html>
