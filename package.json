@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node -e \"console.log('All 12 sponsor integrations passed smoke tests!')\""
+    "test": "node scripts/test_system_health.js",
+    "proof:band": "node scripts/run_band_proof.js",
+    "proof:plaud": "node scripts/run_plaud_proof.js",
+    "proof:all": "node scripts/test_system_health.js && node scripts/run_band_proof.js && node scripts/run_plaud_proof.js"
   },
   "keywords": [
     "dreamnet",
