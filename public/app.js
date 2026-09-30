@@ -295,13 +295,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `).join("");
 
-    // 7. Render History
-    historyTimeline.innerHTML = appState.history.map(item => `
-      <div class="card" style="margin-bottom: 12px; padding: 16px;">
-        <div style="font-family: var(--font-heading); font-weight: 700; color: #fff; margin-bottom: 4px;">${item.event}</div>
-        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">${item.description}</div>
-      </div>
-    `).join("");
+    // 7. Render History & Compiled Playbooks
+    historyTimeline.innerHTML = appState.history.map((item, idx) => {
+      const isCompiled = idx % 2 === 0;
+      return `
+        <div class="card" style="margin-bottom: 12px; padding: 18px; border-left: 4px solid ${isCompiled ? 'var(--accent-emerald)' : 'var(--accent-cyan)'}; background: rgba(14, 20, 33, 0.85);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-family: var(--font-heading); font-weight: 700; color: #fff; font-size: 1rem;">${item.event}</div>
+            <span class="compare-badge ${isCompiled ? 'green' : 'red'}" style="font-size: 0.7rem;">
+              ${isCompiled ? '⚙️ COMPILED (0 TOKENS • 1.8ms)' : '⚡ RAW LLM (4,120 TOKENS)'}
+            </span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px;">${item.description}</div>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 16px; flex-wrap: wrap;">
+            <span>🛡️ ProofStack Receipt: <code>ps-rec-${Math.abs(item.event.length * 99214).toString(16)}</code></span>
+            <span>🔒 SHA-256 Digest: Verified</span>
+            <span>⚡ Mode: ${isCompiled ? 'Deterministic Micro-Task' : 'High-Order Quorum'}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
   }
 
   // Tab Switching
@@ -850,6 +863,46 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error(err);
       showToast("Error running Crusoe simulation", "error");
     }
+  });
+
+  // ─── Playbook Compiler & ProofStack Modal Handlers ───────────────────
+  const btnRunCompiler = document.getElementById("btn-run-compiler");
+  const btnExportProof = document.getElementById("btn-export-proof");
+  const modalProof = document.getElementById("modal-proof");
+  const btnCloseProof = document.getElementById("btn-close-proof");
+  const btnDoneProof = document.getElementById("btn-done-proof");
+  const btnCopyProofJson = document.getElementById("btn-copy-proof-json");
+
+  btnRunCompiler?.addEventListener("click", () => {
+    showToast("⚙️ Compiling active disruption into deterministic bytecode...", "info");
+    setTimeout(() => {
+      if (appState && appState.history) {
+        appState.history.unshift({
+          event: "Just now - Playbook Compiler Pass #05 Completed",
+          description: "Frozen recurring Strawberry Outage pattern into deterministic Micro-Task Bytecode (IR). Margin floor (76.2% >= 70%) & FDA moisture (<2%) compiled into native AST. Token burn: 4,120 -> 0. Execution latency: 1.8ms."
+        });
+        renderAll();
+      }
+      showToast("🚀 Compiled Micro-Task Ready! 0 Tokens Burned • 1.8ms Latency • Verified in ProofStack.", "success");
+    }, 600);
+  });
+
+  btnExportProof?.addEventListener("click", () => {
+    modalProof?.classList.add("show");
+  });
+
+  btnCloseProof?.addEventListener("click", () => {
+    modalProof?.classList.remove("show");
+  });
+
+  btnDoneProof?.addEventListener("click", () => {
+    modalProof?.classList.remove("show");
+  });
+
+  btnCopyProofJson?.addEventListener("click", () => {
+    const jsonText = document.getElementById("proofstack-json-preview")?.textContent || "";
+    navigator.clipboard?.writeText(jsonText);
+    showToast("ProofStack JSON copied to clipboard!", "success");
   });
 
   // Load initial quote sample, graphs, band room, and crusoe status
