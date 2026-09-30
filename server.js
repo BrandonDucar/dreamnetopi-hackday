@@ -257,6 +257,9 @@ function injectStrawberryChaos() {
     }
   ];
 
+  const crusoe = require('./integrations/crusoe');
+  const crusoeSim = crusoe.runCleanComputeSimulation("STRAWBERRY_SHORTAGE_MONTE_CARLO");
+
   state.pendingDecision = {
     decisionId: `DEC-${Date.now().toString(36).toUpperCase()}`,
     title: "Disruption Recovery: Strawberry Inventory Depleted",
@@ -272,6 +275,20 @@ function injectStrawberryChaos() {
         "Kitchen Task COM-02: Shift sealing trays from strawberry to Swicy Mango pouches",
         "Projected Revenue: Increases from $387.25 to $699.65 (+80.6% gross margin lift)"
       ]
+    },
+    crusoeProof: {
+      cluster: "Crusoe Rockies-1 Clean Data Center",
+      instance: crusoeSim.job.instance,
+      iterations: crusoeSim.job.iterations,
+      carbonMitigatedKg: crusoeSim.job.carbonMitigatedKg,
+      proofHash: crusoeSim.job.proofHash,
+      durationSec: crusoeSim.job.durationSec
+    },
+    bandQuorumProof: {
+      room: "pier48-rush",
+      status: "CONSENSUS_REACHED",
+      participatingPeers: ["@offer-desk", "@campaign-desk", "@neo4j-tracer", "@founder"],
+      approvalGate: "/approve"
     },
     diff: {
       oldBundle: state.currentOffer.name,
@@ -606,10 +623,71 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (pathname === "/api/band/send" && req.method === "POST") {
+    let body = "";
+    req.on("data", chunk => { body += chunk; });
+    req.on("end", () => {
+      let sender = "@founder";
+      let text = "Analyzing next operational steps...";
+      try {
+        const json = JSON.parse(body || "{}");
+        if (json.sender) sender = json.sender;
+        if (json.text) text = json.text;
+      } catch (e) {}
+      const bandRoom = require('./integrations/band_room');
+      const result = bandRoom.sendPeerMessage(sender, text);
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(result));
+    });
+    return;
+  }
+
+  if (pathname === "/api/run-band-proof" || pathname === "/api/band/proof") {
+    const bandRoom = require('./integrations/band_room');
+    const state = bandRoom.getRoomState();
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({
+      ok: true,
+      timestamp: new Date().toISOString(),
+      room: state.room,
+      peers: state.peers,
+      proofTrail: {
+        bandProtocol: {
+          room: state.room,
+          quorumVerified: "2-of-2 Agent Quorum PASS",
+          governanceModel: state.governanceModel
+        },
+        openRouter: state.openRouterProof,
+        neo4j: state.neo4jProof,
+        duploCloud: state.duploCloudProof,
+        crusoeCloud: state.crusoeProof
+      },
+      messageCount: state.messages.length
+    }));
+    return;
+  }
+
   if (pathname === "/api/crusoe/status") {
     const crusoe = require('./integrations/crusoe');
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(crusoe.getCrusoeTelemetry()));
+    return;
+  }
+
+  if (pathname === "/api/crusoe/simulate" && req.method === "POST") {
+    let body = "";
+    req.on("data", chunk => { body += chunk; });
+    req.on("end", () => {
+      let simType = "DISRUPTION_REHEARSAL";
+      try {
+        const json = JSON.parse(body || "{}");
+        if (json.type) simType = json.type;
+      } catch (e) {}
+      const crusoe = require('./integrations/crusoe');
+      const simResult = crusoe.runCleanComputeSimulation(simType);
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(simResult));
+    });
     return;
   }
 

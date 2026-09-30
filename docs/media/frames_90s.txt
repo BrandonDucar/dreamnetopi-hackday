@@ -1,0 +1,17 @@
+file 'C:/Users/brand/dreamnetopi-hackday/media/01_today_dashboard.png'
+duration 12
+file 'C:/Users/brand/dreamnetopi-hackday/media/02_voice_brief_modal.png'
+duration 12
+file 'C:/Users/brand/dreamnetopi-hackday/media/03_plan_inventory_table.png'
+duration 10
+file 'C:/Users/brand/dreamnetopi-hackday/media/06_chaos_rehearsal_diff.png'
+duration 12
+file 'C:/Users/brand/dreamnetopi-hackday/media/05_sponsor_tool_matrix.png'
+duration 12
+file 'C:/Users/brand/dreamnetopi-hackday/media/04_postiz_5platform_studio.png'
+duration 12
+file 'C:/Users/brand/dreamnetopi-hackday/media/07_postiz_swicy_mango_approved.png'
+duration 10
+file 'C:/Users/brand/dreamnetopi-hackday/media/08_history_playbook_evolution.png'
+duration 10
+file 'C:/Users/brand/dreamnetopi-hackday/media/08_history_playbook_evolution.png'
