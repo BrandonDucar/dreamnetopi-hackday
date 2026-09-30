@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg-grad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#07090e"/>
+    </radialGradient>
+    <linearGradient id="neon-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#4facfe"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg-grad)"/>
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="rgba(0, 242, 254, 0.4)" stroke-width="4"/>
+  <g filter="url(#glow)">
+    <circle cx="256" cy="230" r="140" fill="none" stroke="url(#neon-cyan)" stroke-width="16"/>
+    <circle cx="256" cy="210" r="70" fill="url(#neon-cyan)" opacity="0.9"/>
+    <!-- Octopus Tentacles -->
+    <path d="M170 280 C140 360, 110 420, 180 430 C220 430, 210 340, 230 290" fill="none" stroke="#00f2fe" stroke-width="18" stroke-linecap="round"/>
+    <path d="M342 280 C372 360, 402 420, 332 430 C292 430, 302 340, 282 290" fill="none" stroke="#00f2fe" stroke-width="18" stroke-linecap="round"/>
+    <path d="M216 300 C190 380, 230 450, 256 450 C282 450, 322 380, 296 300" fill="none" stroke="#4facfe" stroke-width="18" stroke-linecap="round"/>
+    <!-- Eyes -->
+    <circle cx="230" cy="200" r="12" fill="#07090e"/>
+    <circle cx="282" cy="200" r="12" fill="#07090e"/>
+    <circle cx="233" cy="197" r="4" fill="#ffffff"/>
+    <circle cx="285" cy="197" r="4" fill="#ffffff"/>
+  </g>
+</svg>
